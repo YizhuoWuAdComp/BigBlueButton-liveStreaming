@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import sys, argparse, time, subprocess, shlex, logging, os, re
 
 from bigbluebutton_api_python import BigBlueButton, exception
@@ -165,14 +162,9 @@ def bbb_browser():
     logging.info(join_url)
     browser.get(join_url)
 
-
     time.sleep(10)
     try:
-        # Wait for the input element to appear
-        logging.info("Waiting for chat input window to appear.")
-        element = EC.presence_of_element_located((By.ID, 'message-input'))
-        WebDriverWait(browser, selenium_timeout).until(element)
-
+        # Directly try to find the chat input element
         element = browser.find_element(By.ID, 'message-input')
         chat_send = browser.find_elements(By.CSS_SELECTOR, '[aria-label="Send message"]')[0]
         # ensure chat is enabled (might be locked by moderator)
@@ -200,7 +192,7 @@ def bbb_browser():
         if args.chat:
             try:
                 browser.execute_script("document.querySelector('[aria-label=\"User list\"]').parentElement.style.display='none';")
-            except JavaScriptException:
+            except JavascriptException:
                 browser.execute_script("document.querySelector('[aria-label=\"Users list\"]').parentElement.style.display='none';")
         else:
             element = browser.find_elements(By.ID, 'chat-toggle-button')[0]
@@ -277,6 +269,7 @@ def bbb_browser():
 
     if args.bbb_background_color:
         browser.execute_script("document.querySelector('body').setAttribute('style','background-color: %s;');" % args.bbb_background_color)
+
 
 def create_meeting():
     create_params = {}
